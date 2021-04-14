@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2021/4/1 22:24
-# @Author  : chendong14776
+# @Author  : Kevin
 # @File    : clean_data.py
 # @Version : python 3.6
 # @Desc    : 数据清洗
