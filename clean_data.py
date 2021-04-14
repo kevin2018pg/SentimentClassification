@@ -59,6 +59,6 @@ def clean_text(file, save_dir):
 
 
 clean_text('./data/raw/virus_train.txt', './data/clean')
-clean_text('./data/raw/usual_train.txt', '../data/clean')
+#clean_text('./data/raw/usual_train.txt', '../data/clean')
 # clean_text('./data/raw/virus_test.txt', './data/clean')
 # clean_text('./data/raw/usual_test.txt', '../data/clean')
