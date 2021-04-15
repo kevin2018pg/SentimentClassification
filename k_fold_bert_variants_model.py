@@ -365,12 +365,12 @@ def main():
             oof_test += predict_probs
 
         oof_test = oof_test / args.k_fold
-        # 用于stacking
-        with open(os.path.join(args.output_dir, 'oof_train'), 'wb') as wf:
-            pickle.dump(oof_train, wf)
-        # 用于stacking 或者直接根据均值输出结果
-        with open(os.path.join(args.output_dir, 'oof_test'), 'wb') as wf:
-            pickle.dump(oof_test, wf)
-        logging.info('processing end... ...')
-    if __name__ == '__main__':
-        main()
+    # 用于stacking
+    with open(os.path.join(args.output_dir, 'oof_train'), 'wb') as wf:
+        pickle.dump(oof_train, wf)
+    # 用于stacking 或者直接根据均值输出结果
+    with open(os.path.join(args.output_dir, 'oof_test'), 'wb') as wf:
+        pickle.dump(oof_test, wf)
+    logging.info('processing end... ...')
+if __name__ == '__main__':
+    main()
