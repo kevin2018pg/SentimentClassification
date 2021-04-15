@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2021/4/1 22:24
+# @Time    : 2020/4/1 22:24
 # @Author  : Kevin
-# @File    : clean_data.py
+# @File    : process_data.py
 # @Version : python 3.6
-# @Desc    : 数据清洗
+# @Desc    : 脏数据清洗
 
 
-import json
 from tqdm import trange
 from harvesttext import HarvestText
 import pyhanlp
+import json
 import re
 import os
 
