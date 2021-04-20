@@ -8,10 +8,8 @@
 import json
 import logging
 import os
-import time
 import numpy as np
 import torch
-from torch.optim.lr_scheduler import LambdaLR
 from sklearn.metrics import f1_score, confusion_matrix, accuracy_score, classification_report
 from torch.utils.data import RandomSampler, DataLoader, SequentialSampler
 from transformers import AdamW, get_linear_schedule_with_warmup
@@ -138,29 +136,29 @@ def trains(args, train_dataset, eval_dataset, model, fold_num=None):
                     # loss_adv.backward()
                     # dg.rand_restore()
                 pass
-                # 过gradient_accumulation_steps后才将梯度清零，不是每次更新/每过一个batch清空一次梯度，即每gradient_accumulation_steps次更新清空一次
-                if (step + 1) % args.gradient_accumulation_steps == 0:
-                    torch.nn.utils.clip_grad_norm_(model.parameters(), args.max_grad_norm)
-                    optimizer.step()
-                    scheduler.step()  # 更新学习率
-                    model.zero_grad()
-                    global_step += 1
-                    # logging.info("EPOCH = [%d/%d] global_step = %d loss = %f", epoch+1, args.num_train_epochs, global_step,logging_loss)
+            # 过gradient_accumulation_steps后才将梯度清零，不是每次更新/每过一个batch清空一次梯度，即每gradient_accumulation_steps次更新清空一次
+            if (step + 1) % args.gradient_accumulation_steps == 0:
+                torch.nn.utils.clip_grad_norm_(model.parameters(), args.max_grad_norm)
+                optimizer.step()
+                scheduler.step()  # 更新学习率
+                model.zero_grad()
+                global_step += 1
+                # logging.info("EPOCH = [%d/%d] global_step = %d loss = %f", epoch+1, args.num_train_epochs, global_step,logging_loss)
 
-                    # if (global_step % 50 == 0 and global_step <= 1000) or( global_step % 100 == 0 and global_step <= 5000) \
-                    #  or (global_step % 200 == 0):
-                    if global_step % 30 == 0:
-                        logging.info("EPOCH = [%d/%d] global_step = %d loss = %f", epoch + 1, args.num_train_epochs,
-                                     global_step, logging_loss / 30)
-                        logging_loss = 0.0
-                        best_f_score, best_epoch = evaluate_and_save_model(args, model, eval_dataset, epoch,
-                                                                           global_step, best_f_score, best_epoch,
-                                                                           k_fold=fold_num)
-            # 如果3轮没有提升，停止训练。
-            if epoch - best_epoch >= 4:
-                logging.info("Long time no improvement, stop train, best epoch = %f", best_epoch + 1)
-                break
-            logging.info("train end, best epoch = {}, best f score = {}".format(best_epoch + 1, best_f_score))
+                # if (global_step % 50 == 0 and global_step <= 1000) or( global_step % 100 == 0 and global_step <= 5000) \
+                #  or (global_step % 200 == 0):
+                if global_step % 30 == 0:
+                    logging.info("EPOCH = [%d/%d] global_step = %d loss = %f", epoch + 1, args.num_train_epochs,
+                                 global_step, logging_loss / 30)
+                    logging_loss = 0.0
+                    best_f_score, best_epoch = evaluate_and_save_model(args, model, eval_dataset, epoch,
+                                                                       global_step, best_f_score, best_epoch,
+                                                                       k_fold=fold_num)
+        # 如果3轮没有提升，停止训练。
+        if epoch - best_epoch >= 4:
+            logging.info("Long time no improvement, stop train, best epoch = %f", best_epoch + 1)
+            break
+    logging.info("train end, best epoch = {}, best f score = {}".format(best_epoch + 1, best_f_score))
 
 
 def evaluate_and_save_model(args, model, eval_dataset, epoch, global_step, best_f_score, best_epoch, k_fold=None):
@@ -175,9 +173,9 @@ def evaluate_and_save_model(args, model, eval_dataset, epoch, global_step, best_
             model.save_pretrained(os.path.join(args.output_dir, k_fold))
         else:
             model.save_pretrained(args.output_dir)
-        # torch.save(model.state_dict(), os.path.join(args.output_dir, 'pytorch_model.bin'))
-        # logging.info("save the best net %s , label f score = %f",
-        #              os.path.join(args.output_dir, "best_bert.bin"), best_f_score)
+        torch.save(model.state_dict(), os.path.join(args.output_dir, 'pytorch_model.bin'))
+        logging.info("save the best net %s , label f score = %f",
+                     os.path.join(args.output_dir, "best_bert.bin"), best_f_score)
     else:
         improve = ''
     msg = '  Iter: {0:>6},  Val Loss: {1:>5.2}, Val F1: {2:>6.2%}, Val Acc: {3:>6.2%}, {4}'
