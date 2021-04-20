@@ -127,7 +127,7 @@ class SentimentDataset(Dataset):
         return self.features[item]
 
     def get_labels(self):
-        return ['angry', 'surprise', 'fear', 'happy', 'sad', 'neural']
+        return ['angry', 'surprise', 'fear', 'happy', 'sad', 'neutral']
 
 
 class KFoldProcessor:
@@ -149,7 +149,7 @@ class KFoldProcessor:
             id = data['id']
             content = data['content']
             if do_predict:
-                label = 'neural'
+                label = 'neutral'
             else:
                 label = data['label']
             examples.append(
@@ -179,7 +179,7 @@ class KFoldProcessor:
         return examples
 
     def get_labels(self):
-        return ['angry', 'surprise', 'fear', 'happy', 'sad', 'neural']
+        return ['angry', 'surprise', 'fear', 'happy', 'sad', 'neutral']
 
 
 def sentiment_convert_examples_to_features(examples,
@@ -220,7 +220,7 @@ def sentiment_convert_examples_to_features(examples,
             SentimentInputFeatures(input_ids, attention_mask, token_type_ids, label)
         )
 
-        return features
+    return features
 
 
 def main():
