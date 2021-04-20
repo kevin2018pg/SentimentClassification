@@ -209,7 +209,6 @@ def sentiment_convert_examples_to_features(examples,
         input_ids = input_ids + ([pad_token] * padding_length)
         attention_mask = attention_mask + ([0 if mask_padding_with_zero else 1] * padding_length)
         token_type_ids = token_type_ids + ([pad_token_segment_id] * padding_length)
-
         assert len(input_ids) == max_length, "Error with input length {} vs {}".format(len(input_ids), max_length)
         assert len(attention_mask) == max_length, "Error with input length {} vs {}".format(len(attention_mask),
                                                                                             max_length)
@@ -372,5 +371,7 @@ def main():
     with open(os.path.join(args.output_dir, 'oof_test'), 'wb') as wf:
         pickle.dump(oof_test, wf)
     logging.info('processing end... ...')
+
+
 if __name__ == '__main__':
     main()
