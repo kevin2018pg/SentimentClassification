@@ -19,14 +19,11 @@ from transformers import BertForSequenceClassification
 
 LABEL_LIST = ['angry', 'surprise', 'fear', 'happy', 'sad', 'neural']
 SMP_2019_LABEL_LIST = ['0', '1', '2']
-
-
 def get_time_dif(start_time):
     """获取已使用时间"""
     end_time = time.time()
     time_dif = end_time - start_time
     return timedelta(seconds=int(round(time_dif)))
-
 
 def set_seed(seed):
     np.random.seed(seed)
@@ -34,7 +31,6 @@ def set_seed(seed):
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
     # torch.backends.cudnn.deterministic = True
-
 
 def set_logger(log_path):
     """Set the logger to log info in terminal and file `log_path`.
@@ -64,7 +60,6 @@ def set_logger(log_path):
         stream_handler.setFormatter(logging.Formatter('%(message)s'))
         logger.addHandler(stream_handler)
 
-
 def collate_batch(features):
     # In this method we'll make the assumption that all `features` in the batch
     # have the same attributes.
@@ -92,10 +87,13 @@ def collate_batch(features):
 
     # Handling of all other possible attributes.
     # Again, we will use the first element to figure out which key/values are not None for this model.
+    # print("==============debug==========",features)
     for k, v in vars(first).items():
         if k not in ("label", "label_ids") and v is not None and not isinstance(v, str):
             batch[k] = torch.tensor([getattr(f, k) for f in features], dtype=torch.long)
     return batch
+
+
 
 # def convert_example_to_features(example, max_seq_length, tokenizer):
 #     """
